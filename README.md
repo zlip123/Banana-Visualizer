@@ -8,9 +8,9 @@ Auto-refreshing web dashboard that displays your Basecamp Card Table with age-ba
 
 - ✅ **Auto-refreshing** - Updates every 60 seconds automatically
 - 🎨 **Age-based coloring** - Cards change color based on age
-  - 🟢 Green: 0-3 days old
-  - 🟡 Yellow: 4-13 days old
-  - 🔴 Red: 14+ days old
+  - 🟢 Green: 0-6 days old
+  - 🟡 Yellow: 7-20 days old
+  - 🔴 Red: 21+ days old
 - 📱 **Responsive design** - Works on desktop, tablet, and mobile
 - 🚀 **Free hosting** on Render
 - 🔒 **Secure** - Credentials stored as environment variables

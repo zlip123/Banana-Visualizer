@@ -36,6 +36,37 @@ def get_basecamp_headers():
         "User-Agent": USER_AGENT
     }
 
+def refresh_access_token():
+    """Refresh the Basecamp access token using the refresh token"""
+    refresh_token = os.environ.get('BASECAMP_REFRESH_TOKEN')
+    client_id = os.environ.get('BASECAMP_CLIENT_ID')
+    client_secret = os.environ.get('BASECAMP_CLIENT_SECRET')
+    
+    if not all([refresh_token, client_id, client_secret]):
+        return False
+    
+    try:
+        response = requests.post(
+            'https://launchpad.37signals.com/authorization/token',
+            data={
+                'type': 'refresh',
+                'refresh_token': refresh_token,
+                'client_id': client_id,
+                'client_secret': client_secret
+            }
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            # Update the global token variable
+            global BASECAMP_ACCESS_TOKEN
+            BASECAMP_ACCESS_TOKEN = data['access_token']
+            return True
+    except:
+        pass
+    
+    return False
+
 def calculate_card_age(created_at):
     """Calculate how many days old a card is"""
     created_date = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
@@ -59,9 +90,13 @@ def fetch_card_table_data():
         url = f"https://3.basecampapi.com/{BASECAMP_ACCOUNT_ID}/buckets/{PROJECT_ID}/card_tables/{CARD_TABLE_ID}.json"
         response = requests.get(url, headers=get_basecamp_headers())
         
+        if response.status_code == 401:  # Unauthorized - token expired
+            if refresh_access_token():
+                response = requests.get(url, headers=get_basecamp_headers())  # Retry with new token
+            
         if response.status_code != 200:
             return {"error": f"Failed to fetch Card Table: {response.status_code}"}
-        
+
         card_table = response.json()
         
         # Get all lists (columns)

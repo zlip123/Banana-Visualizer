@@ -103,7 +103,7 @@ def fetch_card_table_data():
         all_lists = card_table.get('lists', [])
         
         # Filter to active columns only
-        columns = [col for col in all_lists if col.get('type') in ['Kanban::Column', 'Kanban::Triage'] and col.get('title') != 'Scrapped']        
+        columns = [col for col in all_lists if col.get('type') in ['Kanban::Column', 'Kanban::Triage'] and col.get('title') != '🗑️SCRAPPED']        
         
         # Fetch cards for each column
         columns_data = []
